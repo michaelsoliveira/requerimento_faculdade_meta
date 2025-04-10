@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Faculdade-Meta</title>
 </head>
 <body>
 @extends('layouts.admin')
@@ -13,8 +13,8 @@
     <div class="card-header hstack gap-2">
         <h2>Lista de Requerimentos</h2>
         <span class="ms-auto">
-            <a href="{{ route('user.create')}}" class="btn btn-success btn-sm">Solicitar Requerimento</a>
-            <a href="{{ route('requerimentos.create') }}" class="btn btn-info btn-sm">Tela de Requerimento</a> <!-- Botão para tela de requerimento -->
+            <a href="{{ route('requerimentos.create')}}" class="btn btn-success btn-sm">Solicitar Requerimento</a>
+            <a href="{{ route('permissions.index') }}" class="btn btn-info btn-sm">Permissoes</a> <!-- Botão para tela de requerimento -->
         </span>
     </div>
 

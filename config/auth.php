@@ -63,6 +63,8 @@ return [
         'users' => [
             'driver' => 'sha512',
             'model' => App\Models\User::class,
+            'table' => 'users',
+            'username' => 'username',
         ],
 
         // 'users' => [

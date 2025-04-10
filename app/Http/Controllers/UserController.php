@@ -68,26 +68,6 @@ class UserController extends Controller
         return redirect()->route('user.show', ['user' => $user->id])->with('success', 'Usuário editado com sucesso!');
     }
 
-
-
-    // public function update(UserRequest $request, User $user)
-    // {
-    //     $request->validated();
-
-    //     $data = [
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //     ];
-
-    //     if ($request->filled('password')) {
-    //         $data['password'] = Hash::make($request->password); // Apenas atualiza a senha se um novo valor for fornecido
-    //     }
-
-    //     $user->update($data);
-
-    //     return redirect()->route('user.show', ['user' => $user->id])->with('success', 'Usuário editado com sucesso!');
-    // }
-
     public function destroy(User $user)
     {
         $user->delete();

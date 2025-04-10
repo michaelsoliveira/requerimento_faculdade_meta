@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class RequerimentoController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');  // Garante que apenas usuários autenticados possam acessar
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');  // Garante que apenas usuários autenticados possam acessar
+    // }
 
     // Exibir lista de requerimentos
     public function index()

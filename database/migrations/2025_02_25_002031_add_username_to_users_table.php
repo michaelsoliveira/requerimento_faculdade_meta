@@ -4,32 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * Adiciona a coluna 'username' à tabela 'users'.
-     */
-    public function up()
+return new class extends Migration {
+    public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->unique()->nullable()->after('id'); // Permite NULL
+            $table->string('username')->unique()->after('id'); // Adiciona a coluna username
         });
     }
 
-    /**
-     * Reverte a migração.
-     *
-     * Remove a coluna 'username' da tabela 'users'.
-     */
-    public function down()
+    public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'username')) {
-                $table->dropUnique(['username']);
-                $table->dropColumn('username');
-            }
+            $table->dropColumn('username');
         });
     }
 };

@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-<!-- resources/views/requerimentos/create.blade.php -->
+<<!-- resources/views/requerimentos/create.blade.php -->
 
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
     <div class="card mt-4 mb-4">
@@ -16,7 +16,7 @@
             <h2>Criar Novo Requerimento</h2>
         </div>
         <div class="card-body">
-            <form action="{{ route('requerimentos.store') }}" method="POST">
+            <form action="{{ route('requerimentos.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="disciplina" class="form-label">Disciplina</label>
@@ -30,11 +30,16 @@
                     <label for="descricao" class="form-label">Descrição</label>
                     <textarea class="form-control" name="descricao" rows="3" required></textarea>
                 </div>
+                <div class="mb-3">
+                    <label for="anexo" class="form-label">Anexo (opcional)</label>
+                    <input type="file" class="form-control" name="anexo">
+                </div>
                 <button type="submit" class="btn btn-success">Enviar</button>
             </form>
         </div>
     </div>
 @endsection
+
 
 
 </body>

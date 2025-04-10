@@ -8,12 +8,6 @@
         <span class="ms-auto d-sm-flex flex-row">
             <a href="{{ route('user.index')}}" class="btn btn-info btn-sm me-1">Lista de Requerimentos</a>
             <a href="{{ route('user.show', ['user' => $user->id]) }}" class="btn btn-primary btn-sm me-1">Visualizar</a>
-
-            <!-- <form method="POST" action="{{ route('user.destroy', ['user' => $user->id]) }}">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm me-1" onclick="return confirm('Tem certeza que deseja apagar esse registro?')">Apagar</button>
-            </form> -->
         </span>
     </div>
 

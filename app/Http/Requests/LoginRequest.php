@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class LoginRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine se o usuário tem permissão para fazer esta requisição.
      */
     public function authorize(): bool
     {
@@ -15,23 +15,28 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Obter as regras de validação que se aplicam à requisição.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password'=> 'required', 
+            'username' => 'required|string',
+            'password' => 'required|string',
         ];
     }
+
+    /**
+     * Obter as mensagens de erro personalizadas para cada validação.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
-        return[
-            'email.required' => 'Campo e-mail é obrigatório!',
-            'email.email' => 'Necessário enviar e-mail válido',
-            'password.required' => 'Campo senha é obrigatório'
+        return [
+            'username.required' => 'O campo matrícula de usuário é obrigatório!',
+            'password.required' => 'O campo senha é obrigatório!',
         ];
     }
 }

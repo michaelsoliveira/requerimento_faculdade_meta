@@ -3,17 +3,51 @@
 // use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequerimentoController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\PermissionController;
 
-
+//login
 Route::get('/', [AuthController::class, 'index'])->name('login'); // Exibe a página de login
 Route::post('/login', [AuthController::class, 'loginProcess'])->name('login.process'); // Processa o login do usuário
 Route::get('/logout', [AuthController::class, 'destroy'])->name('login.destroy'); // Realiza o logout do usuário
 Route::get('/create-user-login', [AuthController::class, 'create'])->name('login.create-user'); // Exibe o formulário de cadastro de usuário
 Route::post('/store-user-login', [AuthController::class, 'store'])->name('login.store-user'); // Processa o cadastro do usuário
+
+
+
+// Cursos
+Route::get('/index-course', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/show-course/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/create-course', [CourseController::class, 'create'])->name('courses.create');
+Route::post('/store-course', [CourseController::class, 'store'])->name('courses.store');
+Route::get('/edit-course/{course}', [CourseController::class, 'edit'])->name('courses.edit');
+Route::put('/update-course/{course}', [CourseController::class, 'update'])->name('courses.update');
+Route::delete('/destroy-course/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+
+// resetar senha
+Route::get('/esqueci-senha', [ForgotPasswordController::class, 'showForm'])->name('password.request');
+Route::post('/esqueci-senha', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+
+// Permissões
+Route::get('/permissoes', [PermissionController::class, 'index'])->name('permissions.index');
+Route::post('/permissoes', [PermissionController::class, 'store'])->name('permissions.store');
+Route::delete('/permissoes/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+
+// routes/web.php
+Route::get('/requerimentos', [RequerimentoController::class, 'index'])->name('requerimentos.index');
+Route::get('/create-requerimento', [RequerimentoController::class, 'create'])->name('requerimentos.create');
+Route::post('/store-requerimento', [RequerimentoController::class, 'store'])->name('requerimentos.store');
+Route::get('/show-requerimento/{requerimento}', [RequerimentoController::class, 'show'])->name('requerimentos.show');
+Route::get('/edit-requerimento/{requerimento}', [RequerimentoController::class, 'edit'])->name('requerimentos.edit');
+Route::put('/update-requerimento/{requerimento}', [RequerimentoController::class, 'update'])->name('requerimentos.update');
+Route::delete('/destroy-requerimento/{requerimento}', [RequerimentoController::class, 'destroy'])->name('requerimentos.destroy');
+
 
 // Rotas protegidas por autenticação
 Route::group(['Middleware' => 'auth'], function(){
@@ -26,12 +60,12 @@ Route::group(['Middleware' => 'auth'], function(){
     Route::delete('/destroy-user/{user}', [UserController::class, 'destroy'])->name('user.destroy'); // Exclui um usuário do sistema
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('requerimentos', RequerimentoController::class);
-});
 
-// routes/web.php
-Route::get('requerimentos/create', [RequerimentoController::class, 'create'])->name('requerimentos.create');
+
+
+
+
+
 
 
 
