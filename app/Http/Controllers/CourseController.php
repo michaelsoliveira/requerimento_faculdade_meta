@@ -38,7 +38,8 @@ class CourseController extends Controller
     public function store(Request $request)
     {   // cadastrar no banco de dados 
         $course = Course::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'description' => $request->description
         ]);
         //redirecionar o usuario, enviar uma mensagem de sucesso
         return redirect()->route('courses.show', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');

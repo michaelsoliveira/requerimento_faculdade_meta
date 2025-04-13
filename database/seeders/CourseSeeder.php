@@ -13,12 +13,18 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!Course::where('name', 'Curso de Programação - T1')->first()) {
-            Course::create(['name' => 'Curso de Programação - T1',]);
+        if (!Course::where('name', 'Sistemas Para Internet')->first()) {
+            Course::create([
+                'name' => 'Sistemas Para Internet',
+                'description' => 'focado em desenvolvimento web'
+            ]);
         }
 
-        if (!Course::where('name', 'Curso de Programação - T2')->first()) {
-            Course::create(['name' => 'Curso de Programação - T2',]);
+        if (!Course::where('name', 'Redes de Computadores')->first()) {
+            Course::create([
+                'name' => 'Redes de Computadores',
+                'description' => 'focado em redes de computadores e computação distribuida'
+            ]);
         }
     }
 }

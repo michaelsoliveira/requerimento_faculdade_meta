@@ -4,7 +4,7 @@
     <h2>Editar o Curso</h2>
 
     <a href="{{ route('courses.index') }}">
-        <button type="button">Listar</button>
+        <button type="button">Listar Curso</button>
     </a><br><br>
     
     <a href="{{ route('courses.show', ['course' => $course->id]) }}">

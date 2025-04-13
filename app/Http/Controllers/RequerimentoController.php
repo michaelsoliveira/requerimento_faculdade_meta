@@ -84,6 +84,7 @@ class RequerimentoController extends Controller
     public function edit($id)
     {
         $requerimento = Requerimento::findOrFail($id);
+        
         return view('requerimentos.edit', compact('requerimento'));
     }
 

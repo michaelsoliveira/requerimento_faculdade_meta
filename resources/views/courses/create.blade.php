@@ -21,6 +21,10 @@
         <input type="text" name="name" id="name" placeholder="Nome do curso" value="{{ old('name') }}"
             required><br><br>
 
+        <label>Descrição: </label>
+        <input type="text" name="description" id="description" placeholder="Descrição do curso" value="{{ old('description') }}"
+            required><br><br>
+
         <button type="submit">Cadastrar</button>
 
     </form>

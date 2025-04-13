@@ -2,6 +2,7 @@
 
 // use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
@@ -28,6 +29,18 @@ Route::post('/store-course', [CourseController::class, 'store'])->name('courses.
 Route::get('/edit-course/{course}', [CourseController::class, 'edit'])->name('courses.edit');
 Route::put('/update-course/{course}', [CourseController::class, 'update'])->name('courses.update');
 Route::delete('/destroy-course/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+//atendentes
+Route::get('/index-atendimento', [AtendimentoController::class, 'index'])->name('atendimentos.index');
+Route::get('/show-atendimento/{atendimento}', [AtendimentoController::class, 'show'])->name('atendimentos.show');
+Route::get('/create-atendimento', [AtendimentoController::class, 'create'])->name('atendimentos.create');
+Route::post('/store-atendimento', [AtendimentoController::class, 'store'])->name('atendimentos.store');
+Route::get('/edit-atendimento/{atendimento}', [AtendimentoController::class, 'edit'])->name('atendimentos.edit');
+Route::put('/update-atendimento/{atendimento}', [AtendimentoController::class, 'update'])->name('atendimentos.update');
+Route::delete('/destroy-atendimento/{atendimento}', [AtendimentoController::class, 'destroy'])->name('atendimentos.destroy');
+
+
+
 
 
 // resetar senha

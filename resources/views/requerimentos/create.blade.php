@@ -16,7 +16,7 @@
             <h2>Criar Novo Requerimento</h2>
         </div>
         <div class="card-body">
-            <form action="{{ route('requerimentos.store') }}" method="POST" enctype="multipart/form-data">
+            <fom action="{{ route('requerimentos.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="disciplina" class="form-label">Disciplina</label>
@@ -26,7 +26,7 @@
                     <label for="tipo" class="form-label">Tipo</label>
                     <input type="text" class="form-control" name="tipo" required>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3">r
                     <label for="descricao" class="form-label">Descrição</label>
                     <textarea class="form-control" name="descricao" rows="3" required></textarea>
                 </div>
