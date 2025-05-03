@@ -37,7 +37,9 @@ class AuthController extends Controller
             // Verifica a senha com SHA-512 + Salt
             if (strpos($user->password, '$6$') === 0 && hash_equals($user->password, crypt($request->password, $user->password))) {
                 // Criar sessão e redirecionar
-                session(['user' => $user, 'role' => $user->role]);
+                // session(['user' => $user, 'role' => $user->role]);
+                Auth::login($user);
+
                 return redirect()->route('user.index');
             }
             return redirect()->back()->withInput()->with('error', 'Senha incorreta');

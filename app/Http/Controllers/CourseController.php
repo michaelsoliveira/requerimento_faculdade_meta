@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CourseRequest;
 use App\Models\Course;
+use App\Models\Discipline;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -12,20 +14,22 @@ class CourseController extends Controller
     public function index()
     {   //recuperar os registros do banco de dados
         $courses = Course::orderBy('id', 'DESC')->get();
+        $disciplines = Discipline::all();
         //$courses = Course::paginate(10);
         //$courses = Course::where('id', 1000)->get();
         // carregar a view
-        return view('courses.index', ['courses' => $courses]); 
+        return view('courses.index', ['courses' => $courses , 'disciplines' => $disciplines]); 
     }
 
     //visualizar um unico curso
     public function show(Request $request)
     {   
        $course = Course::where('id', $request->course)->first();
+       $disciplines = Discipline::where('course_id', $request->course)->get();
 
         
         // carregar a view
-        return view('courses.show', ['course' => $course]);
+        return view('courses.show', ['course' => $course , 'disciplines' => $disciplines]);
     }
 
     //cadastrar um curso
@@ -35,11 +39,17 @@ class CourseController extends Controller
     }
 
     //cadastrar um curso
-    public function store(Request $request)
-    {   // cadastrar no banco de dados 
+    public function store(CourseRequest $request)
+    {   
+        //validadar o formulário
+        $request->validated([
+            'name' => 'required|unique:courses,name',
+            'description' => 'required',
+        ]);
+        // cadastrar no banco de dados 
         $course = Course::create([
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description,
         ]);
         //redirecionar o usuario, enviar uma mensagem de sucesso
         return redirect()->route('courses.show', ['course' => $course->id])->with('success', 'Curso cadastrado com sucesso!');
@@ -54,11 +64,14 @@ class CourseController extends Controller
     }
 
     //atualizar no banco de dados de curso
-    public function update(Request $request, Course $course)
+    public function update(CourseRequest $request, Course $course)
     {   
+        //validadar o formulário
+        $request->validated();
         //editar informações no banco de dados 
         $course->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'description' => $request->description,
         ]);
         // redirecionar o usuario, enviar uma mensagem de sucesso
         return redirect()->route('courses.show', ['course' => $course->id])->with('success', 'Curso editado com sucesso!');

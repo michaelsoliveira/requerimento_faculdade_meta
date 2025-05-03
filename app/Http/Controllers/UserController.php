@@ -6,12 +6,17 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
+use App\models\Course;
+use App\models\Discipline;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::orderByDesc('id')->paginate(1);
+        $course = Course::first();
+        $discipline= Discipline::where('course_id', $course->id)->get();
+
         return view('users.index', ['users' => $users]);
     }
 

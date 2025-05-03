@@ -1,31 +1,31 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2>Cadastrar o Curso</h2>
+<h2>Cadastrar o Curso</h2>
 
-    <a href="{{ route('courses.index') }}">
-        <button type="button">Listar</button>
-    </a><br><br>
+<a href="{{ route('courses.index') }}">
+    <button type="button">Listar</button>
+</a><br><br>
 
-    @if (session('success'))
-        <p style="color: #082">
-            {{ session('success') }}
-        </p>
-    @endif
+@if (session('success'))
+<p style="color: #082">
+    {{ session('success') }}
+</p>
+@endif
 
-    <form action="{{ route('courses.store') }}" method="POST">
-        @csrf
-        @method('POST')
+<x-alert />
 
-        <label>Nome: </label>
-        <input type="text" name="name" id="name" placeholder="Nome do curso" value="{{ old('name') }}"
-            required><br><br>
+<form action="{{ route('courses.store') }}" method="POST">
+    @csrf
+    @method('POST')
 
-        <label>Descrição: </label>
-        <input type="text" name="description" id="description" placeholder="Descrição do curso" value="{{ old('description') }}"
-            required><br><br>
+    <label>Nome: </label>
+    <input type="text" name="name" id="name" placeholder="Nome do curso" value="{{ old('name') }}"><br><br>
 
-        <button type="submit">Cadastrar</button>
+    <label>Descrição: </label>
+    <input type="text" name="description" id="description" placeholder="Descrição do curso" value="{{ old('description') }}"><br><br>
 
-    </form>
+    <button type="submit">Cadastrar</button>
+
+</form>
 @endsection

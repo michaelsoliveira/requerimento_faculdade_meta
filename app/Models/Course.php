@@ -12,5 +12,15 @@ class Course extends Model
     //indicar o nome da tabela
     protected $table = 'courses';
     //indicar quais colunas poder ser cadastradas
-    protected $fillable = ['name'];
+    protected $fillable =
+    [
+        'name',
+        'description'
+    ];
+    // criar um relacionamento entre um e muitos
+    public function disciplines()
+    {
+        return $this->hasMany(Discipline::class);
+    }
+    // o curso pode ter um ou mais disciplinas
 }

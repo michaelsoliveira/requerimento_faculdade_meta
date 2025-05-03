@@ -5,12 +5,14 @@
 use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DisciplineController;
 use App\Http\Controllers\UserController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequerimentoController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PermissionController;
+use App\Models\Discipline;
 
 //login
 Route::get('/', [AuthController::class, 'index'])->name('login'); // Exibe a página de login
@@ -29,6 +31,15 @@ Route::post('/store-course', [CourseController::class, 'store'])->name('courses.
 Route::get('/edit-course/{course}', [CourseController::class, 'edit'])->name('courses.edit');
 Route::put('/update-course/{course}', [CourseController::class, 'update'])->name('courses.update');
 Route::delete('/destroy-course/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+//disciplinas
+Route::get('/index-discipline/{course}', [DisciplineController::class, 'index'])->name('discipline.index');
+Route::get('/show-discipline/{discipline}', [DisciplineController::class, 'show'])->name('discipline.show');
+Route::get('/create-discipline/{course}', [DisciplineController::class, 'create'])->name('discipline.create');
+Route::post('/store-discipline', [DisciplineController::class, 'store'])->name('discipline.store');
+// Route::get('/edit-discipline/{discipline}', [DisciplineController::class, 'edit'])->name('discipline.edit');
+// Route::put('/update-discipline/{discipline}', [DisciplineController::class, 'update'])->name('discipline.update');
+// Route::delete('/destroy-discipline/{discipline}', [DisciplineController::class, 'destroy'])->name('discipline.destroy');
 
 //atendentes
 Route::get('/index-atendimento', [AtendimentoController::class, 'index'])->name('atendimentos.index');
