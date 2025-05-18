@@ -5,23 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
-use App\models\Course;
-use App\models\Discipline;
+use App\Models\Requerimento;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::orderByDesc('id')->paginate(1);
-        $course = Course::first();
-        $discipline= Discipline::where('course_id', $course->id)->get();
+        $users = User::orderByDesc('id')->paginate(2);
+        $requerimentos = Requerimento::all();
+        
 
-        return view('users.index', ['users' => $users]);
+        return view('users.index', ['users' => $users, 'requerimentos' => $requerimentos]);
     }
 
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
+
+        
         return view('users.show', ['user' => $user]);
     }
 

@@ -27,6 +27,13 @@ class User extends Authenticatable
         'role',
         'course',
     ];
+
+    //criar relacionamento entre um e muitos
+    public function requerimentos()
+    {
+        return $this->hasMany(Requerimento::class);
+    }
+    
     public function getAuthIdentifierName()
     {
         return 'username';

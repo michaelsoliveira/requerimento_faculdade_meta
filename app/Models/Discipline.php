@@ -20,5 +20,12 @@ class Discipline extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function disciplines()
+    {
+        return $this->belongsToMany(Discipline::class, 'discipline_requerimento', 'requerimento_id', 'discipline_id');
+    }
+
+
     //o disciplina pode 
 }

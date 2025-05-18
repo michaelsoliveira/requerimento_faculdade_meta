@@ -1,114 +1,98 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\Requerimento;
+use App\Models\Course;
+use App\Models\Discipline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class RequerimentoController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');  // Garante que apenas usuários autenticados possam acessar
-    // }
+    public function download($id)
+    {
+        $requerimento = Requerimento::findOrFail($id);
 
-    // Exibir lista de requerimentos
+        if ($requerimento->user_id !== auth()->id()) {
+            abort(403, 'Você não tem permissão para acessar este arquivo.');
+        }
+
+        if (!$requerimento->anexo || !file_exists(storage_path("app/public/{$requerimento->anexo}"))) {
+            abort(404, 'Arquivo não encontrado.');
+        }
+
+        return response()->download(storage_path("app/public/{$requerimento->anexo}"));
+    }
+
+    public function getDisciplinasPorCurso($id)
+    {
+        $disciplinas = Discipline::where('course_id', $id)->get();
+        return response()->json($disciplinas);
+    }
+
     public function index()
     {
-        // Exibe todos os requerimentos do usuário autenticado
-        $requerimentos = Requerimento::where('user_id', Auth::id())->orderByDesc('created_at')->paginate(10);
+        $user = auth()->user();
+        $requerimentos = Requerimento::where('user_id', $user->id)->orderByDesc('id')->paginate(100);
         return view('requerimentos.index', compact('requerimentos'));
     }
 
-    // Exibir o formulário de criação de requerimento
+    public function show(Requerimento $requerimento)
+    {
+        $requerimentos = $requerimento;
+        return view('requerimentos.show', compact('requerimentos'));
+    }
+
     public function create()
     {
-        return view('requerimentos.create');
+        $courses = Course::orderBy('id', 'asc')->get();
+        $user = auth()->user();
+        return view('requerimentos.create', compact('courses', 'user'));
     }
 
-    // Salvar o novo requerimento
-    public function store(Request $request)
+    public function store(Request $request , Requerimento $requerimento)
     {
         $request->validate([
-            'disciplina' => 'required|string|max:255',
-            'tipo' => 'required|string|max:255',
+            'course_id' => 'required|exists:courses,id',
+            'tipo_requerimento' => 'required|string',
             'descricao' => 'required|string',
+            'anexo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
+            'protocolo' => 'nullable|string',
+            'discipline_id' => 'nullable|array',
+            'discipline_id.*' => 'exists:discipline,id', // corrigido de disciplines -> discipline
         ]);
 
-        // Obtendo os dados do usuário do Moodle
-        $user = Auth::user();
-        $moodleUser = DB::connection('moodle')->table('mdl_user')
-            ->where('email', $user->email)
-            ->first();
-
-        if (!$moodleUser) {
-            return redirect()->route('requerimentos.create')->with('error', 'Usuário não encontrado no banco do Moodle.');
+        $anexoPath = null;
+        if ($request->hasFile('anexo')) {
+            $anexoPath = $request->file('anexo')->store('anexos', 'public');
         }
 
-        // Buscando o curso do usuário
-        $userCourse = DB::connection('moodle')->table('mdl_enrol')
-            ->join('mdl_course', 'mdl_enrol.courseid', '=', 'mdl_course.id')
-            ->where('mdl_enrol.userid', $moodleUser->id)
-            ->first();
+        $user = auth()->user();
 
-        if (!$userCourse) {
-            return redirect()->route('requerimentos.create')->with('error', 'Curso não encontrado para o usuário no Moodle.');
-        }
-
-        // Criando o requerimento
-        Requerimento::create([
-            'user_id' => Auth::id(),
-            'nome' => $moodleUser->firstname . ' ' . $moodleUser->lastname,
-            'email' => $moodleUser->email,
-            'curso' => $userCourse->fullname ?? 'Curso não encontrado',
-            'disciplina' => $request->disciplina,
-            'tipo' => $request->tipo,
+        $requerimento = Requerimento::create([
+            'user_id' => $user->id,
+            'matricula' => $user->username,
+            'course_id' => $request->course_id,
+            'tipo_requerimento' => $request->tipo_requerimento,
             'descricao' => $request->descricao,
-            'status' => 'pendente',
+            'anexo' => $anexoPath,
+            'protocolo' => null,
         ]);
-
-        return redirect()->route('requerimentos.index')->with('success', 'Requerimento enviado com sucesso!');
-    }
-
-    // Exibir os detalhes de um requerimento
-    public function show($id)
-    {
-        $requerimento = Requerimento::findOrFail($id);
-        return view('requerimentos.show', compact('requerimento'));
-    }
-
-    // Exibir o formulário de edição de um requerimento
-    public function edit($id)
-    {
-        $requerimento = Requerimento::findOrFail($id);
         
-        return view('requerimentos.edit', compact('requerimento'));
-    }
 
-    // Atualizar um requerimento
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pendente,aprovado,negado',
-        ]);
-
-        $requerimento = Requerimento::findOrFail($id);
-        $requerimento->update([
-            'status' => $request->status,
-        ]);
-
-        return redirect()->route('requerimentos.index')->with('success', 'Requerimento atualizado!');
-    }
-
-    // Remover um requerimento
-    public function destroy($id)
-    {
-        $requerimento = Requerimento::findOrFail($id);
-        $requerimento->delete();
+       $requerimento = Requerimento::with('disciplines')->findOrFail($requerimento->id);
         
-        return redirect()->route('requerimentos.index')->with('success', 'Requerimento removido!');
+
+        $protocolo = 'REQ-' . Carbon::now()->format('dmY') . '-' . str_pad($requerimento->id, 2, '0', STR_PAD_LEFT);
+        $requerimento->update(['protocolo' => $protocolo]);
+
+        if ($request->has('discipline_id')) {
+            $requerimento->discipline()->attach($request->input('discipline_id'));
+        }
+
+        return redirect()->route('requerimentos.index')
+            ->with('success', "Requerimento enviado com sucesso! Seu protocolo de atendimento foi gerado: $protocolo");
     }
 }

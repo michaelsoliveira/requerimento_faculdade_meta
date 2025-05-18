@@ -18,7 +18,7 @@ class Course extends Model
         'description'
     ];
     // criar um relacionamento entre um e muitos
-    public function disciplines()
+    public function discipline()
     {
         return $this->hasMany(Discipline::class);
     }

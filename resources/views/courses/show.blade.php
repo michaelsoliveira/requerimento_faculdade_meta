@@ -48,7 +48,12 @@ Editado: {{ \Carbon\Carbon::parse($course->updated_at)->format('d/m/Y H:i:s') }}
                 <td>{{ $discipline->description }}</td>
                 <td class="text-center">
                     <a href="{{ route('discipline.show', ['discipline' => $discipline->id]) }}" class="btn btn-primary btn-sm">Visualizar</a>
-                
+                    <a href="{{ route('discipline.edit', ['discipline' => $discipline->id]) }}" class="btn btn-warning btn-sm">Editar</a>
+                    <form method="POST" action="{{ route('discipline.destroy' , ['discipline' => $discipline->id]) }}" class="d-inline">
+                        @csrf
+                        @method('delete')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja apagar este registro?')">Apagar</button>
+                    </form>
                 </td>
             </tr>
 
@@ -59,6 +64,6 @@ Editado: {{ \Carbon\Carbon::parse($course->updated_at)->format('d/m/Y H:i:s') }}
             @endforelse
         </tbody>
     </table>
-   
+
 </div>
 @endsection

@@ -6,7 +6,7 @@
     <div class="card-header hstack gap-2">
         <span>Editar</span>
         <span class="ms-auto d-sm-flex flex-row">
-            <a href="{{ route('user.index')}}" class="btn btn-info btn-sm me-1">Lista de Requerimentos</a>
+            <a href="{{ route('user.index')}}" class="btn btn-info btn-sm me-1">Tela Inicial</a>
             <a href="{{ route('user.show', ['user' => $user->id]) }}" class="btn btn-primary btn-sm me-1">Visualizar</a>
         </span>
     </div>

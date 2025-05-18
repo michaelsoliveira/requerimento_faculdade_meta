@@ -4,7 +4,7 @@
 <div class="card mt-4 mb-4 border-light shadow">
 
         <div class="card-header hstack gap-2">
-                <span>Visualizar o usuário (requerimento)</span>
+                <span>Visualizar o usuário</span>
                 <span class="ms-auto d-sm-flex flex-row">
                         <a href="{{ route('user.index')}}" class="btn btn-info btn-sm me-1">lista de requeriemnto</a>
                         <a href="{{ route('user.edit', ['user' => $user->id]) }}" class="btn btn-warning btn-sm me-1">Editar</a>

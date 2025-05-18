@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CourseRequest;
 use App\Models\Course;
 use App\Models\Discipline;
+use Exception;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -25,7 +26,7 @@ class CourseController extends Controller
     public function show(Request $request)
     {   
        $course = Course::where('id', $request->course)->first();
-       $disciplines = Discipline::where('course_id', $request->course)->get();
+        $disciplines = Discipline::all();
 
         
         // carregar a view
@@ -43,7 +44,7 @@ class CourseController extends Controller
     {   
         //validadar o formulário
         $request->validated([
-            'name' => 'required|unique:courses,name',
+            'name' => 'required ',
             'description' => 'required',
         ]);
         // cadastrar no banco de dados 
@@ -80,9 +81,16 @@ class CourseController extends Controller
     // deletar um curso
     public function destroy(Course $course)
     {   
+        try {
         //deletar no banco de dados
         $course->delete();
         // redirecionar o usuario, enviar uma mensagem de sucesso
         return redirect()->route('courses.index')->with('success', 'Curso removido com sucesso!');
+        
+        } catch (Exception $e) {
+
+            
+            return redirect()->route('courses.index')->with('error', 'Erro ao remover o curso, verifique se ele possui disciplinas cadastradas!');
+        }
     }
 }

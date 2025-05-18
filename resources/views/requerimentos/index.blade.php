@@ -1,51 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Email</th>
-            <th scope="col">Curso</th>
-            <th scope="col">Disciplina</th>
-            <th scope="col">Tipo</th>
-            <th scope="col">Status</th>
-            <th scope="col" class="text-center">Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($requerimentos as $requerimento)
-        <tr>
-            <th>{{ $requerimento->id }}</th>
-            <td>{{ $requerimento->nome }}</td>
-            <td>{{ $requerimento->email }}</td>
-            <td>{{ $requerimento->curso }}</td>
-            <td>{{ $requerimento->disciplina }}</td>
-            <td>{{ $requerimento->tipo }}</td>
-            <td>{{ $requerimento->status }}</td>
-            <td class="text-center">
-                <a href="{{ route('requerimentos.show', $requerimento->id) }}" class="btn btn-primary btn-sm">Visualizar</a>
-                <a href="{{ route('requerimentos.edit', $requerimento->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                <form method="POST" action="{{ route('requerimentos.destroy', $requerimento->id) }}" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja apagar esse registro?')">Apagar</button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+<br>
+<div class="card-header hstack gap-2">
+    <h2>Bem vindo ao sistema {{ Auth::user()->name }}</h2>
+    <span class="ms-auto">
+        <a href="{{ route('requerimentos.create')}}" class="btn btn-success btn-sm">Solicitar Requerimento</a>
+        <a href="{{ route('requerimentos.index') }}" class="btn btn-info btn-sm">Lista de Requerimentos</a>
+        <a href="{{ route('courses.index') }}" class="btn btn-info btn-sm">Cursos</a>
+    </span>
+</div>
 
-</body>
-</html>
+
+<x-alert />
+
+<div class="card mt-4 mb-4">
+    <div class="card-header">
+        <h2>Historico de requerimentos enviados</h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Protocolo</th>
+                    <th scope="col">Tipo de Requerimento</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Data de Envio</th>
+                    <th scope="col">Anexo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($requerimentos as $requerimento)
+                <tr>
+                    <th scope="row">{{$requerimento->protocolo }}</th>
+
+                    <td>{{$requerimento->tipo_requerimento}}</td>
+                    <td>{{$requerimento->descricao}}</td>
+                    <td>{{$requerimento->created_at->format('d/m/Y')}}</td>
+                    <td class='text-center'>
+                        <a href="{{route('requerimentos.show', ['requerimento' => $requerimento->id])}}" class="btn btn-primary btn-sm">Visualizar</a>
+                    <td class='text-center'><a href="{{route('requerimentos.download', ['id' => $requerimento->id])}}" class="btn btn-success btn-sm">Download</a></td>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection

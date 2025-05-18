@@ -21,8 +21,24 @@
         Curso: {{ $discipline->course->name }}<br>
         Cadastrado: {{ \Carbon\Carbon::parse($discipline->created_at)->format('d/m/Y H:i:s') }}<br>
         Editado: {{ \Carbon\Carbon::parse($discipline->updated_at)->format('d/m/Y H:i:s') }}<br><br>
+
+        <a href="{{ route('discipline.edit', ['discipline' => $discipline->id]) }}">
+            <button type="button">Editar</button>
+        </a>
+
+        <a href="{{ route('discipline.show', ['discipline' => $discipline->id]) }}">
+            <button type="button">Visualizar</button>
+        </a><br><br>
+
+        <form action="{{ route('discipline.destroy', ['discipline' => $discipline->id]) }}" method="POST">
+            @csrf
+            @method('delete')
+            <button type="submit" onclick="return confirm('Tem certeza que deseja apagar este registro?')">Apagar</button>
+        </form><br>
+
+
     @empty
-        <p style="color: #f00">Nenhuma aula encontrada!</p>
+        <p style="color: #f00">Nenhuma disciplina encontrada!</p>
     @endforelse
 
 @endsection

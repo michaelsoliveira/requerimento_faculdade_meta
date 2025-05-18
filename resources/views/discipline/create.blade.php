@@ -2,29 +2,29 @@
 
 @section('content')
 
-    <h2>Cadastrar Disciplina</h2>
+<h2>Cadastrar Disciplina do curso {{ $course->name }}</h2>
 
-    <a href="{{ route('discipline.index', ['course' => $course->id]) }}">
-        <button type="button">Disciplinas</button>
-    </a><br><br>
+<a href="{{ route('discipline.index', ['course' => $course->id]) }}">
+    <button type="button">Disciplinas</button>
+</a><br><br>
 
-    <x-alert />    
+<x-alert />
 
-    {{-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis suscipit magnam amet. Consequatur animi odio vitae dolorum asperiores cum exercitationem quo nam quaerat fugiat non vero mollitia, iste culpa aut! --}}
+<form action="{{ route('discipline.store') }}" method="POST">
+    @csrf
+    @method('POST')
 
-    <form action="{{ route('discipline.store') }}" method="POST">
-        @csrf
-        @method('POST')
+    <input type="hidden" name="course_id" id="course_id" value="{{ $course->id }}">
 
-        <input type="hidden" name="course_id" id="course_id" value="{{ $course->id }}">
+    <label>Nome: </label>
+    <input type="text" name="name" id="name" placeholder="Nome da aula" value="{{ old('name') }}"><br><br>
 
-        <label>Nome: </label>
-        <input type="text" name="name" id="name" placeholder="Nome da aula" value="{{ old('name') }}" required><br><br>
+    <div class="mb-3">
+        <label for="descricao" class="form-label">Descrição</label>
+        <textarea class="form-control" name="description" id="description" rows="3" value="{{ old('description') }}"></textarea>
+    </div>
 
-        <label>Descrição</label>
-        <textarea name="description" id="description" rows="4" cols="30">{{ old('description') }}</textarea><br><br>
+    <button type="submit">Cadastrar</button>
 
-        <button type="submit">Cadastrar</button>
-
-    </form>
+</form>
 @endsection
