@@ -1,0 +1,86 @@
+services:
+  php:
+    container_name: php8
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - ./application:/var/www/html
+    networks:
+      - meta_network
+    depends_on:
+      - mysql
+  mysql:
+    image: docker.io/bitnami/mariadb:11.4
+    container_name: mysql
+    environment:
+      - MARIADB_USER=meta
+      #- MARIADB_USER_PASSWORD=secret
+      - MARIADB_PASSWORD=secret
+      - MARIADB_ROOT_PASSWORD=secret
+      - MARIADB_DATABASE=meta
+      - MARIADB_CHARACTER_SET=utf8mb4
+      - MARIADB_COLLATE=utf8mb4_unicode_ci
+    volumes:
+      - ./db-data:/bitnami/mariadb
+    networks:
+      - meta_network
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - meta_network
+    volumes:
+      - ./application/:/var/www/html/
+      - ./logs/nginx:/var/log/nginx
+    container_name: nginx
+  
+  moodle:
+    image: docker.io/bitnami/moodle:4.5
+    container_name: moodle
+    ports:
+      - '8083:8080'
+      - '443:8443'
+    environment:
+      - MOODLE_DATABASE_HOST=mysql
+      - MOODLE_DATABASE_PORT_NUMBER=3306
+      - MOODLE_DATABASE_USER=meta
+      - MOODLE_DATABASE_PASSWORD=secret
+      - MOODLE_DATABASE_NAME=meta
+      - BITNAMI_DEBUG=true
+    volumes:
+      - "./moodle/moodle_data:/bitnami/moodle"
+    depends_on:
+      - mysql
+    networks:
+      - meta_network
+  
+  node:
+    image: node:18
+    container_name: node
+    working_dir: /var/www/html
+    volumes:
+      - ./application:/var/www/html
+    command: sh -c "npm cache clean --force && rm -rf node_modules && npm install && npm run build"
+    networks:
+      - meta_network
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=secret
+    networks:
+      - meta_network
+networks:
+  meta_network:

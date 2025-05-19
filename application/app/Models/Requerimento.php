@@ -29,7 +29,7 @@ class Requerimento extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    public function discipline()
+    public function disciplines()
 {
     return $this->belongsToMany(Discipline::class, 'discipline_requerimento', 'requerimento_id', 'discipline_id');
 }

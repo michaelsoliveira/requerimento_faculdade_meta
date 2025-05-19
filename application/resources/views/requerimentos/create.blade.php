@@ -48,7 +48,7 @@
             <div class="mb-3" id="campo_disciplina" style="display: none;">
                 <label for="discipline_id">Disciplina</label>
                 <select id="discipline_id" name="discipline_id[]" class="form-select form-select-sm" multiple>
-                    <option value="">Selecione a disciplina</option>
+                    <option value="" disabled selected>Selecione a disciplina</option>
                     <!-- adicione as discipline_ids reais -->
                 </select>
                 <small>Segure Ctrl (ou Cmd no Mac) para selecionar várias disciplinas</small>
@@ -92,13 +92,13 @@
         const disciplinaSelect = document.getElementById('discipline_id');
 
         // Limpa as opções anteriores
-        disciplinaSelect.innerHTML = '<option value="">Carregando disciplinas...</option>';
+        disciplinaSelect.innerHTML = '<option value="" disabled selected>Carregando disciplinas...</option>';
 
         // Faz a requisição AJAX
         fetch(`/disciplinas-por-curso/${courseId}`)
             .then(response => response.json())
             .then(data => {
-                disciplinaSelect.innerHTML = '<option value="">Selecione a disciplina</option>';
+                disciplinaSelect.innerHTML = '<option value="" disabled selected>Selecione a disciplina</option>';
                 data.forEach(disciplina => {
                     const option = document.createElement('option');
                     option.value = disciplina.id;

@@ -58,19 +58,19 @@ class AuthController extends Controller
         }
 
         // Busca o papel do usuário no Moodle
-        $role = DB::connection('mysql_moodle')->table('role_assignments')
+        $role = DB::connection('mysql')->table('mdl_role_assignments')
             ->where('userid', $moodleUser->id)
-            ->join('role', 'role.id', '=', 'role_assignments.roleid')
-            ->select('role.shortname')
+            ->join('mdl_role', 'mdl_role.id', '=', 'mdl_role_assignments.roleid')
+            ->select('mdl_role.shortname')
             ->first();
 
         // Se for aluno (webservice), adiciona ao banco principal
-        if ($role && isset($role->shortname) && $role->shortname === 'webservice') {
+        if ($role && isset($role->shortname) && $role->shortname === 'manager') {
             $user = User::create([
                 'username' => $moodleUser->username,
                 'name' => $moodleUser->firstname . ' ' . $moodleUser->lastname,
                 'email' => $moodleUser->email,
-                'role' => 'webservice',
+                'role' => 'manager',
                 'password' => $moodleUser->password, // Armazena exatamente como no Moodle (SHA-512 + salt)
             ]);
 

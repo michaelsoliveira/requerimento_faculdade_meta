@@ -14,7 +14,7 @@ class RequerimentoController extends Controller
     public function download($id)
     {
         $requerimento = Requerimento::findOrFail($id);
-
+        
         if ($requerimento->user_id !== auth()->id()) {
             abort(403, 'Você não tem permissão para acessar este arquivo.');
         }
@@ -61,7 +61,7 @@ class RequerimentoController extends Controller
             'anexo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
             'protocolo' => 'nullable|string',
             'discipline_id' => 'nullable|array',
-            'discipline_id.*' => 'exists:discipline,id', // corrigido de disciplines -> discipline
+            'discipline_id.*' => 'exists:discipline,id',
         ]);
 
         $anexoPath = null;
@@ -82,14 +82,14 @@ class RequerimentoController extends Controller
         ]);
         
 
-       $requerimento = Requerimento::with('disciplines')->findOrFail($requerimento->id);
-        
+        $requerimento = Requerimento::with('disciplines')->findOrFail($requerimento->id);
 
         $protocolo = 'REQ-' . Carbon::now()->format('dmY') . '-' . str_pad($requerimento->id, 2, '0', STR_PAD_LEFT);
         $requerimento->update(['protocolo' => $protocolo]);
-
+        
         if ($request->has('discipline_id')) {
-            $requerimento->discipline()->attach($request->input('discipline_id'));
+            $disciplineIds = array_filter($request->input('discipline_id'), fn($id) => !is_null($id) && $id !== '');
+            $requerimento->disciplines()->attach($disciplineIds);
         }
 
         return redirect()->route('requerimentos.index')
