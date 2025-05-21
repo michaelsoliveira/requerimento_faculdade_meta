@@ -2,84 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use App\Models\MoodleUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use App\Services\MoodleService;
 use Exception;
 
 
 class AuthController extends Controller
 {
-    public function index()
+    public function login(LoginRequest $request)
     {
-        return view('login.index');
-    }
-
-    public function loginProcess(LoginRequest $request)
-    {
-        // Validar o formulário
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required'
+        $response = Http::asForm()->post(env('MOODLE_URL') . '/login/token.php', [
+            'username' => $request['username'],
+            'password' => $request['password'],
+            'service' => env('MOODLE_SERVICE_NAME', 'moodle_mobile_app'),
         ]);
 
-        // Buscar usuário no banco principal pelo 'username'
-        $user = User::where('username', $request->username)->first();
-
-        if ($user) {
-            // Verifica a senha com SHA-512 + Salt
-            if (strpos($user->password, '$6$') === 0 && hash_equals($user->password, crypt($request->password, $user->password))) {
-                // Criar sessão e redirecionar
-                // session(['user' => $user, 'role' => $user->role]);
-                Auth::login($user);
-
-                return redirect()->route('user.index');
-            }
-            return redirect()->back()->withInput()->with('error', 'Senha incorreta');
-        }
-
-        // Se não encontrou no banco principal, buscar no Moodle
-        $moodleUser = MoodleUser::where('username', $request->username)->first();  
-
-        if (!$moodleUser) {
-            return redirect()->back()->withInput()->with('error', 'Usuário não encontrado');
-        }
-
-        // Verifica o formato do hash SHA-512 com Salt ($6$)
-        if (strpos($moodleUser->password, '$6$') !== 0 || !hash_equals($moodleUser->password, crypt($request->password, $moodleUser->password))) {
-            return redirect()->back()->with('error', 'Senha incorreta');
-        }
-
-        // Busca o papel do usuário no Moodle
-        $role = DB::connection('mysql')->table('mdl_role_assignments')
-            ->where('userid', $moodleUser->id)
-            ->join('mdl_role', 'mdl_role.id', '=', 'mdl_role_assignments.roleid')
-            ->select('mdl_role.shortname')
-            ->first();
-
-        // Se for aluno (webservice), adiciona ao banco principal
-        if ($role && isset($role->shortname) && $role->shortname === 'manager') {
-            $user = User::create([
-                'username' => $moodleUser->username,
-                'name' => $moodleUser->firstname . ' ' . $moodleUser->lastname,
-                'email' => $moodleUser->email,
-                'role' => 'manager',
-                'password' => $moodleUser->password, // Armazena exatamente como no Moodle (SHA-512 + salt)
+        if ($response->failed() || isset($response['error'])) {
+            throw ValidationException::withMessages([
+                'username' => ['Credenciais inválidas.'],
             ]);
-
-            // Criar sessão e redirecionar
-            session(['user' => $user, 'role' => 'aluno']);
-            return redirect()->route('user.index');
         }
 
-        return redirect()->back()->with('error', 'Usuário sem permissão adequada');
+        $token = $response['token'];
+
+        $userResponse = Http::get(env('MOODLE_URL') . '/webservice/rest/server.php', [
+            'wstoken' => $token,
+            'wsfunction' => 'core_webservice_get_site_info',
+            'moodlewsrestformat' => 'json',
+        ]);
+
+        if ($userResponse->failed()) {
+            throw ValidationException::withMessages([
+                'username' => ['Erro ao buscar dados do Moodle.'],
+            ]);
+        }
+
+        $moodleUser = $userResponse->json();
+
+        $user = User::updateOrCreate(
+            ['username' => $moodleUser['username']],
+            [
+                'name' => $moodleUser['fullname'],
+                'email' => $moodleUser['username'] . '@meta.edu.br', // Moodle nem sempre retorna email
+                'username' => $moodleUser['username'],
+            ]
+        );
+
+        // 4. Gera o token Sanctum
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ]);
     }
 
     public function create()
