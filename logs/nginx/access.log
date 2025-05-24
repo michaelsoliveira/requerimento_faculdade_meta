@@ -155,3 +155,5 @@
 172.18.0.1 - - [19/May/2025:01:54:36 +0000] "GET /requerimentos HTTP/1.1" 200 6298 "http://localhost:8080/create-requerimento" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" "-"
 172.19.0.1 - - [21/May/2025:14:09:50 +0000] "GET / HTTP/1.1" 200 490 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" "-"
 172.19.0.1 - - [21/May/2025:14:09:52 +0000] "GET /favicon.ico HTTP/1.1" 200 0 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" "-"
+172.18.0.1 - - [21/May/2025:21:22:28 +0000] "GET / HTTP/1.1" 502 559 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" "-"
+172.18.0.1 - - [21/May/2025:21:22:28 +0000] "GET /favicon.ico HTTP/1.1" 304 0 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" "-"
